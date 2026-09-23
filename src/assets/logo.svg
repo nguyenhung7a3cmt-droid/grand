@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14161F"/>
+      <stop offset="100%" stop-color="#090A0E"/>
+    </linearGradient>
+
+    <!-- Crimson Ruby Gradient for 'S' -->
+    <linearGradient id="rubyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3352"/>
+      <stop offset="50%" stop-color="#EE1D36"/>
+      <stop offset="100%" stop-color="#A50E22"/>
+    </linearGradient>
+
+    <!-- Bright White/Silver Gradient for 'G' -->
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+
+    <!-- Ruby Glow Filter -->
+    <filter id="rubyGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#EE1D36" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="darkShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Shield / Hex Badge -->
+  <polygon points="250,25 450,115 450,385 250,475 50,385 50,115" 
+           fill="url(#bgGrad)" 
+           stroke="#232634" 
+           stroke-width="6" />
+           
+  <polygon points="250,42 432,124 432,376 250,458 68,376 68,124" 
+           fill="none" 
+           stroke="rgba(238, 29, 54, 0.3)" 
+           stroke-width="2" />
+
+  <!-- GS Geometric Interlocking Monogram Group -->
+  <g filter="url(#darkShadow)">
+    <!-- 'G' Symbol (White / Silver Geometric Arch & Bar) -->
+    <!-- Top & Left & Bottom Loop of G -->
+    <path d="M250 110 
+             L360 110 
+             L330 160 
+             L220 160 
+             L165 215 
+             L165 285 
+             L220 340 
+             L310 340 
+             L310 260 
+             L250 260 
+             L260 215 
+             L360 215 
+             L360 365 
+             L240 400 
+             L170 375 
+             L115 310 
+             L115 190 
+             L180 125 Z" 
+          fill="url(#silverGrad)" />
+
+    <!-- 'S' Symbol (Crimson Ruby Geometric Bolt Overlaid and Interlocked) -->
+    <path filter="url(#rubyGlow)" 
+          d="M385 155
+             L385 210
+             L270 210
+             L255 240
+             L355 260
+             L390 320
+             L335 390
+             L205 390
+             L230 340
+             L330 340
+             L345 315
+             L245 295
+             L210 235
+             L265 155 Z" 
+          fill="url(#rubyGrad)" />
+
+    <!-- Inner Sharp Accent / Diamond Core -->
+    <polygon points="250,230 265,250 250,270 235,250" fill="#FFFFFF" opacity="0.9" filter="url(#rubyGlow)"/>
+  </g>
+</svg>

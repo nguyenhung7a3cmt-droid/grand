@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Official Lenis Smooth Scroll CSS Standard */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  body {
+    background-color: #08090C;
+    color: #F8FAFC;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Chakra Petch', sans-serif;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08090C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232634;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #EE1D36;
+}
+
+/* Glassmorphism & Neon Glow Helpers */
+.glass-panel {
+  background: rgba(17, 18, 24, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(35, 38, 52, 0.8);
+}
+
+.shadow-glow-primary {
+  box-shadow: 0 0 20px rgba(238, 29, 54, 0.35);
+}
+
+.shadow-glow-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+.shadow-glow-success {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+}
+
+.btn-primary {
+  background: #EE1D36;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #FF2E4D;
+  box-shadow: 0 0 20px rgba(238, 29, 54, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #181A22;
+  color: #F8FAFC;
+  border: 1px solid #232634;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #232634;
+  color: #FFFFFF;
+  border-color: #EE1D36;
+}
