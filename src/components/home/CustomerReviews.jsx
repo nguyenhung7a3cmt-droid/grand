@@ -176,7 +176,7 @@ export default function CustomerReviews() {
               type="button"
               onMouseEnter={() => soundFx.cardHover()}
               onClick={() => { soundFx.modalOpen(); openProofsModal(); }}
-              className="px-4 py-3 rounded-2xl bg-gs-raised hover:bg-white/10 text-white border border-gs-border hover:border-emerald-500/60 font-heading font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-lg group"
+              className="min-h-[44px] px-4 py-2.5 rounded-2xl bg-gs-raised hover:bg-white/10 text-white border border-gs-border hover:border-emerald-500/60 font-heading font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-lg group"
             >
               <span>View Full Ledger ({proofsList.length})</span>
               <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
@@ -192,7 +192,7 @@ export default function CustomerReviews() {
             <button
               type="button"
               onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('all'); soundFx.click(); }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+              className={`min-h-[38px] px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                 sourceTab === 'all'
                   ? 'bg-gs-primary text-white shadow-glow-primary'
                   : 'text-gs-muted hover:text-white'
@@ -205,7 +205,7 @@ export default function CustomerReviews() {
             <button
               type="button"
               onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('discord'); soundFx.click(); }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+              className={`min-h-[38px] px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                 sourceTab === 'discord'
                   ? 'bg-[#5865F2] text-white shadow-[0_0_15px_rgba(88,101,242,0.4)]'
                   : 'text-gs-muted hover:text-[#8ea1e1]'
@@ -219,7 +219,7 @@ export default function CustomerReviews() {
             <button
               type="button"
               onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('escrow'); soundFx.click(); }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+              className={`min-h-[38px] px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                 sourceTab === 'escrow'
                   ? 'bg-emerald-600 text-white shadow-glow-success'
                   : 'text-gs-muted hover:text-emerald-400'
@@ -238,7 +238,7 @@ export default function CustomerReviews() {
                 key={cat.id}
                 type="button"
                 onMouseEnter={() => soundFx.pillHover()} onClick={() => { setSelectedGame(cat.id); soundFx.click(); }}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1 ${
+                className={`min-h-[38px] px-3 py-1.5 rounded-xl text-[11px] font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1 ${
                   selectedGame === cat.id
                     ? 'bg-gs-raised border-gs-primary text-white shadow-xs'
                     : 'bg-[#090a10]/60 border-gs-border/60 text-gs-muted hover:text-white hover:border-gs-border'

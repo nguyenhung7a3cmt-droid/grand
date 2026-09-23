@@ -51,12 +51,17 @@ export default function StatusModal() {
 
   useEffect(() => {
     if (isStatusModalOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
       pingNodes();
       const onKey = (e) => {
         if (e.key === 'Escape') closeStatusModal();
       };
       window.addEventListener('keydown', onKey);
-      return () => window.removeEventListener('keydown', onKey);
+      return () => {
+        document.body.style.overflow = prev;
+        window.removeEventListener('keydown', onKey);
+      };
     }
   }, [isStatusModalOpen, closeStatusModal]);
 

@@ -35,12 +35,12 @@ export default function GameFilterTabs() {
     <div className="space-y-3">
       {/* Horizontal Game Switcher Tabs */}
       <div className="relative">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none no-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none no-scrollbar touch-pan-x overscroll-x-contain">
           {/* 'All Games' Tab */}
           <button
             type="button"
             onClick={() => { setSelectedGame('all'); setSelectedCategory('all'); soundFx.tabSwitch(); }}
-            className={`px-4 py-2.5 rounded-2xl font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 border ${
+            className={`min-h-[44px] px-4 py-2.5 rounded-2xl font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 border active:scale-95 touch-manipulation cursor-pointer ${
               selectedGame === 'all'
                 ? 'bg-gs-primary text-white border-gs-primary shadow-glow-primary'
                 : 'bg-gs-card text-gs-muted hover:text-white border-gs-border hover:border-gs-border/90'
@@ -67,7 +67,7 @@ export default function GameFilterTabs() {
                 <button
                   type="button"
                   onClick={() => { setSelectedGame(game.id); setSelectedCategory('all'); soundFx.tabSwitch(); }}
-                  className={`px-4 py-2.5 rounded-2xl font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2.5 border ${
+                  className={`min-h-[44px] px-4 py-2.5 rounded-2xl font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2.5 border active:scale-95 touch-manipulation cursor-pointer ${
                     isSelected
                       ? 'bg-gs-raised border-gs-primary text-white shadow-glow-primary'
                       : 'bg-gs-card text-gs-muted hover:text-white border-gs-border hover:border-gs-border/90'
@@ -115,7 +115,7 @@ export default function GameFilterTabs() {
             <button
               type="button"
               onClick={() => { openGameEditor(null); soundFx.tabSwitch(); }}
-              className="px-3 py-2 rounded-2xl bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/50 text-purple-300 text-xs font-heading font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 shadow-sm"
+              className="min-h-[44px] px-3.5 py-2.5 rounded-2xl bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/50 text-purple-300 text-xs font-heading font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Add Game Tab</span>
@@ -126,7 +126,7 @@ export default function GameFilterTabs() {
 
       {/* Category Pills */}
       {selectedGame !== 'all' && categoriesList.length > 0 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none touch-pan-x overscroll-x-contain">
           <span className="text-[11px] font-heading font-bold uppercase text-gs-muted shrink-0 flex items-center gap-1">
             <span>Filter:</span>
           </span>
@@ -137,7 +137,7 @@ export default function GameFilterTabs() {
                 key={cat.id}
                 type="button"
                 onClick={() => { setSelectedCategory(cat.id); soundFx.tabSwitch(); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 shrink-0 border ${
+                className={`min-h-[38px] px-3.5 py-2 rounded-xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 shrink-0 border active:scale-95 touch-manipulation cursor-pointer ${
                   isCatActive
                     ? 'bg-gs-raised border-gs-primary text-white shadow-sm'
                     : 'bg-gs-card text-gs-muted hover:text-white border-gs-border'

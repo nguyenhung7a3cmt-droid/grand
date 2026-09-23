@@ -158,7 +158,13 @@ export function StoreProvider({ children }) {
   const toggleSound = useCallback(() => {
     setSoundEnabled((prev) => {
       const next = !prev;
+      if (!next) {
+        soundFx.buttonClick();
+      }
       localStorage.setItem(STORAGE_KEYS.SOUND, JSON.stringify(next));
+      if (next) {
+        soundFx.buttonClick();
+      }
       return next;
     });
   }, []);
@@ -169,6 +175,8 @@ export function StoreProvider({ children }) {
     else if (type === 'error') soundFx.error();
     else if (type === 'hover') soundFx.hover();
     else if (type === 'tab') soundFx.tabSwitch();
+    else if (type === 'drawer') soundFx.drawerOpen();
+    else if (type === 'modal') soundFx.modalOpen();
     else soundFx.click();
     return;
     if (!soundEnabled || typeof window === 'undefined') return;
@@ -474,8 +482,8 @@ export function StoreProvider({ children }) {
   const closeProductModal = useCallback(() => { setActiveProductModal(null); triggerAudio('click'); }, [triggerAudio]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const openCart = useCallback(() => { setIsCartOpen(true); triggerAudio('click'); }, [triggerAudio]);
-  const closeCart = useCallback(() => { setIsCartOpen(false); triggerAudio('click'); }, [triggerAudio]);
+  const openCart = useCallback(() => { setIsCartOpen(true); soundFx.drawerOpen(); }, []);
+  const closeCart = useCallback(() => { setIsCartOpen(false); soundFx.drawerClose(); }, []);
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const openCheckout = useCallback(() => { setIsCheckoutOpen(true); triggerAudio('click'); }, [triggerAudio]);
@@ -651,24 +659,24 @@ export function StoreProvider({ children }) {
   }, [cart, cartTotal, cartSubtotal, cartDiscountAmount, robloxUser, clearCart, triggerAudio]);
 
   const [isProofsModalOpen, setIsProofsModalOpen] = useState(false);
-  const openProofsModal = useCallback(() => setIsProofsModalOpen(true), []);
-  const closeProofsModal = useCallback(() => setIsProofsModalOpen(false), []);
+  const openProofsModal = useCallback(() => { setIsProofsModalOpen(true); soundFx.modalOpen(); }, []);
+  const closeProofsModal = useCallback(() => { setIsProofsModalOpen(false); soundFx.modalClose(); }, []);
 
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const openStatusModal = useCallback(() => setIsStatusModalOpen(true), []);
-  const closeStatusModal = useCallback(() => setIsStatusModalOpen(false), []);
+  const openStatusModal = useCallback(() => { setIsStatusModalOpen(true); soundFx.modalOpen(); }, []);
+  const closeStatusModal = useCallback(() => { setIsStatusModalOpen(false); soundFx.modalClose(); }, []);
 
   const [isTutorialModalOpen, setIsTutorialModalOpen] = useState(false);
-  const openTutorialModal = useCallback(() => setIsTutorialModalOpen(true), []);
-  const closeTutorialModal = useCallback(() => setIsTutorialModalOpen(false), []);
+  const openTutorialModal = useCallback(() => { setIsTutorialModalOpen(true); soundFx.modalOpen(); }, []);
+  const closeTutorialModal = useCallback(() => { setIsTutorialModalOpen(false); soundFx.modalClose(); }, []);
 
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
-  const openSupportModal = useCallback(() => setIsSupportModalOpen(true), []);
-  const closeSupportModal = useCallback(() => setIsSupportModalOpen(false), []);
+  const openSupportModal = useCallback(() => { setIsSupportModalOpen(true); soundFx.modalOpen(); }, []);
+  const closeSupportModal = useCallback(() => { setIsSupportModalOpen(false); soundFx.modalClose(); }, []);
 
   const [isAffiliateModalOpen, setIsAffiliateModalOpen] = useState(false);
-  const openAffiliateModal = useCallback(() => setIsAffiliateModalOpen(true), []);
-  const closeAffiliateModal = useCallback(() => setIsAffiliateModalOpen(false), []);
+  const openAffiliateModal = useCallback(() => { setIsAffiliateModalOpen(true); soundFx.modalOpen(); }, []);
+  const closeAffiliateModal = useCallback(() => { setIsAffiliateModalOpen(false); soundFx.modalClose(); }, []);
 
   const value = {
     // Dynamic In-Place Catalog CMS

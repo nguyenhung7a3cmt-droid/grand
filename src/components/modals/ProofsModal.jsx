@@ -194,11 +194,16 @@ export default function ProofsModal() {
 
   useEffect(() => {
     if (!isProofsModalOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKey = (e) => {
       if (e.key === 'Escape') closeProofsModal();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
   }, [isProofsModalOpen, closeProofsModal]);
 
   if (!isProofsModalOpen) return null;

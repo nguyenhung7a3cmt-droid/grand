@@ -75,11 +75,16 @@ export default function TutorialModal() {
 
   useEffect(() => {
     if (!isTutorialModalOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKey = (e) => {
       if (e.key === 'Escape') closeTutorialModal();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
   }, [isTutorialModalOpen, closeTutorialModal]);
 
   if (!isTutorialModalOpen) return null;

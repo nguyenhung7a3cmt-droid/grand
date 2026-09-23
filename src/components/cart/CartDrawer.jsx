@@ -60,15 +60,21 @@ export default function CartDrawer() {
     }
   }, [isCartOpen]);
 
-  // Handle ESC key close
+  // Handle ESC key close & body scroll lock
   useEffect(() => {
+    if (!isCartOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     function handleKeyDown(e) {
       if (e.key === 'Escape' && isCartOpen) {
         closeCart();
       }
     }
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isCartOpen, closeCart]);
 
   if (!isCartOpen) return null;

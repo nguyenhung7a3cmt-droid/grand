@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ShieldCheck, RefreshCw, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
+import { soundFx } from '../../utils/soundFx';
 
 export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onReset }) {
   const triggerVerified = (tok) => {
@@ -17,15 +18,24 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
   // Canvas visual distortion for anti-bot OCR scraping
   const canvasRef = useRef(null);
 
-  const generateChallenge = () => {
-    const n1 = Math.floor(Math.random() * 8) + 2; // 2..9
-    const n2 = Math.floor(Math.random() * 8) + 1; // 1..8
+  const generateChallenge = (keepError = false) => {
+    const raw1 = Math.floor(Math.random() * 8) + 2; // 2..9
+    const raw2 = Math.floor(Math.random() * 8) + 1; // 1..8
     const ops = ['+', '-'];
     const op = ops[Math.floor(Math.random() * ops.length)];
 
+    let n1 = raw1;
+    let n2 = raw2;
     let ans = 0;
-    if (op === '+') ans = n1 + n2;
-    else ans = n1 >= n2 ? n1 - n2 : n1 + n2;
+
+    if (op === '+') {
+      ans = n1 + n2;
+    } else {
+      // Strictly guarantee n1 >= n2 so the arithmetic result is ALWAYS positive (never negative)
+      n1 = Math.max(raw1, raw2);
+      n2 = Math.min(raw1, raw2);
+      ans = n1 - n2;
+    }
 
     setNum1(n1);
     setNum2(n2);
@@ -35,8 +45,10 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
       window.__grandstock_test_captcha_answer = ans;
     }
     setUserAnswer('');
-    setStatus('idle');
-    setErrorMessage('');
+    if (!keepError) {
+      setStatus('idle');
+      setErrorMessage('');
+    }
     onReset?.();
 
     // Render distorted challenge on canvas
@@ -95,6 +107,7 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
     if (!userAnswer.trim()) {
       setErrorMessage('Please solve the security challenge.');
       setStatus('error');
+      soundFx.error?.();
       return;
     }
 
@@ -104,14 +117,16 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
       if (parseInt(userAnswer.trim(), 10) === expectedAnswer) {
         setStatus('success');
         setErrorMessage('');
+        soundFx.success?.();
         const token = `captcha_token_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
         triggerVerified(token);
       } else {
         setStatus('error');
         setErrorMessage('Incorrect answer. Please try again.');
-        generateChallenge();
+        soundFx.error?.();
+        generateChallenge(true);
       }
-    }, 400);
+    }, 300);
   };
 
   return (
@@ -132,7 +147,7 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
       </div>
 
       {isVerified || status === 'success' ? (
-        <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs flex items-center justify-between font-mono">
+        <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs flex items-center justify-between font-mono animate-fadeIn">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="font-bold">Human Verification Succeeded</span>
@@ -144,40 +159,45 @@ export default function SecurityCaptcha({ onVerified, onVerify, isVerified, onRe
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             {/* Visual Canvas & Refresh */}
             <div className="flex items-center gap-2 shrink-0">
-              <div className="relative rounded-xl overflow-hidden border border-gs-border shrink-0">
+              <div className="relative rounded-xl overflow-hidden border border-gs-border shrink-0 bg-black">
                 <canvas
                   ref={canvasRef}
                   width={130}
-                  height={38}
+                  height={44}
                   className="block"
                 />
               </div>
 
               <button
                 type="button"
-                onClick={generateChallenge}
-                className="p-2 rounded-xl bg-gs-raised hover:bg-gs-card text-gs-muted hover:text-white border border-gs-border transition-colors shrink-0"
+                onClick={() => { generateChallenge(); soundFx.pop?.(); }}
+                className="h-11 w-11 min-w-[44px] min-h-[44px] rounded-xl bg-gs-raised hover:bg-gs-card active:scale-95 text-gs-muted hover:text-white border border-gs-border transition-all shrink-0 flex items-center justify-center cursor-pointer"
                 title="Refresh Challenge"
+                aria-label="Refresh Security Challenge"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-4 h-4" />
               </button>
             </div>
 
             {/* Input & Verify */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
               <input
                 type="number"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                min="0"
+                autoComplete="off"
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleVerify(e); }}
                 placeholder="Answer"
-                className="w-full px-2.5 py-2 rounded-xl bg-gs-raised border border-gs-border focus:border-emerald-500 text-white text-xs font-mono placeholder-slate-500 focus:outline-none"
+                className="w-full h-11 px-3 py-2.5 rounded-xl bg-gs-raised border border-gs-border focus:border-emerald-500 text-white text-sm font-mono placeholder-slate-500 focus:outline-none touch-manipulation"
               />
               <button
                 type="button"
                 onClick={handleVerify}
                 disabled={status === 'verifying'}
-                className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-bold text-xs uppercase tracking-wider shrink-0 transition-colors"
+                className="h-11 min-h-[44px] px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-heading font-black text-xs uppercase tracking-wider shrink-0 transition-all cursor-pointer shadow-glow-success flex items-center justify-center touch-manipulation disabled:opacity-50"
               >
                 {status === 'verifying' ? '...' : 'Verify'}
               </button>

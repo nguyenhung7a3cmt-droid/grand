@@ -206,7 +206,7 @@ const ProductCard = React.forwardRef(({ product }, ref) => {
         <button
           type="button"
           onClick={handleQuickAdd}
-          className={`py-2 px-2.5 rounded-xl text-xs font-heading font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+          className={`min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-heading font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 touch-manipulation ${
             isAdded
               ? 'bg-emerald-500 text-white shadow-glow-success'
               : 'btn-secondary hover:border-gs-primary'
@@ -228,7 +228,7 @@ const ProductCard = React.forwardRef(({ product }, ref) => {
         <button
           type="button"
           onClick={handleInstantBuy}
-          className="btn-primary py-2 px-2.5 rounded-xl text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1 shadow-glow-primary transition-all"
+          className="btn-primary min-h-[44px] py-2.5 px-3 rounded-xl text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-glow-primary transition-all active:scale-95 touch-manipulation"
         >
           <Zap className="w-3.5 h-3.5 fill-current" />
           <span>Buy</span>

@@ -27,14 +27,15 @@ export default function CartNotificationToast() {
 
   return (
     <AnimatePresence>
-      <div className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 z-[60] pointer-events-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-          className="relative bg-gs-card/95 border-2 border-emerald-500/60 rounded-2xl shadow-2xl backdrop-blur-xl p-4 overflow-hidden"
-        >
+      <div className="fixed bottom-24 left-0 right-0 px-4 sm:px-0 sm:left-auto sm:right-6 sm:w-96 z-[60] pointer-events-none flex justify-center sm:block">
+        <div className="w-full max-w-sm pointer-events-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            className="relative bg-gs-card/95 border-2 border-emerald-500/60 rounded-2xl shadow-2xl backdrop-blur-xl p-4 overflow-hidden"
+          >
           {/* Neon Ambient Header Glow */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500" />
           
@@ -102,6 +103,7 @@ export default function CartNotificationToast() {
           />
         </motion.div>
       </div>
-    </AnimatePresence>
+    </div>
+  </AnimatePresence>
   );
 }
