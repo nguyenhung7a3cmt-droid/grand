@@ -36,14 +36,14 @@ export async function fetchRobloxUser(username) {
     }
   } catch (e) {}
 
-  // Direct Roblox CDN Avatar Headshot fallback
+  // If proxy cannot resolve or user is not found, do not mark as valid
   return {
-    notFound: false,
+    notFound: true,
     id: null,
     username: cleanUsername,
     displayName: cleanUsername,
-    avatarUrl: `https://www.roblox.com/headshot-thumbnail/image?username=${encodeURIComponent(cleanUsername)}&width=150&height=150&format=png`,
-    isValid: cleanUsername.length >= 3,
-    errorMessage: null
+    avatarUrl: '',
+    isValid: false,
+    errorMessage: 'Unable to verify player on Roblox. Please check spelling.'
   };
 }

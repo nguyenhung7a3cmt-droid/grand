@@ -112,7 +112,7 @@ const ProductCard = React.forwardRef(({ product }, ref) => {
       transition={{ duration: 0.2 }}
       onClick={() => openProductModal(product)}
       onMouseEnter={() => soundFx.cardHover()}
-      className={`group relative bg-gs-card rounded-2xl sm:rounded-3xl border ${rarityStyle.border} ${rarityStyle.glow} transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer p-4 sm:p-5 transform-gpu`}
+      className={`group relative bg-gs-card rounded-2xl sm:rounded-3xl border ${rarityStyle.border} ${rarityStyle.glow} transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer p-4 sm:p-5 transform-gpu w-full max-w-sm sm:max-w-none mx-auto`}
     >
             {/* Holographic Diagonal Light Sheen Overlay on Hover */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none z-20" />
@@ -208,7 +208,7 @@ const ProductCard = React.forwardRef(({ product }, ref) => {
           onClick={handleQuickAdd}
           className={`py-2 px-2.5 rounded-xl text-xs font-heading font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
             isAdded
-              ? 'bg-emerald-500 text-white shadow-glow-success scale-105'
+              ? 'bg-emerald-500 text-white shadow-glow-success'
               : 'btn-secondary hover:border-gs-primary'
           }`}
         >

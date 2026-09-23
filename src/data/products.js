@@ -212,6 +212,30 @@ export const products = [
     badge: 'MUST HAVE'
   },
   {
+    id: 'bf-cdk-sword',
+    emoji: '⚔️',
+    slug: 'cursed-dual-katana-cdk',
+    name: 'Cursed Dual Katana (CDK)',
+    gameId: 'blox-fruits',
+    gameName: 'Blox Fruits',
+    category: 'swords',
+    rarity: 'mythical',
+    originalPrice: 28.00,
+    price: 15.99,
+    stock: 18,
+    instantDelivery: true,
+    image: '/items/bf-dark-blade.png',
+    description: 'The supreme dual sword of the Third Sea. Massive red and black lightning slashes, devastating combo potential, and high mastery unlock.',
+    perks: [
+      'Top-tier competitive PvP sword',
+      'Assisted quest or direct delivery trade',
+      '100% genuine GrandStock delivery'
+    ],
+    tradeRequirements: 'Third Sea access required.',
+    popular: true,
+    badge: 'MYTHIC SWORD'
+  },
+  {
     id: 'bf-fruit-notifier',
     emoji: '📡',
     slug: 'fruit-notifier-gamepass',

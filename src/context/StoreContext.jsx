@@ -22,6 +22,8 @@ const CURRENCY_RATES = {
   USD: { code: 'USD', symbol: '$', rate: 1.0, name: 'US Dollar', flag: '🇺🇸' },
   EUR: { code: 'EUR', symbol: '€', rate: 0.92, name: 'Euro', flag: '🇪🇺' },
   GBP: { code: 'GBP', symbol: '£', rate: 0.79, name: 'British Pound', flag: '🇬🇧' },
+  VND: { code: 'VND', symbol: '₫', rate: 25400.0, name: 'Vietnamese Dong', flag: '🇻🇳' },
+  JPY: { code: 'JPY', symbol: '¥', rate: 155.0, name: 'Japanese Yen', flag: '🇯🇵' },
   AUD: { code: 'AUD', symbol: 'A$', rate: 1.52, name: 'Australian Dollar', flag: '🇦🇺' },
   CAD: { code: 'CAD', symbol: 'C$', rate: 1.36, name: 'Canadian Dollar', flag: '🇨🇦' },
   PHP: { code: 'PHP', symbol: '₱', rate: 58.5, name: 'Philippine Peso', flag: '🇵🇭' },
@@ -51,8 +53,21 @@ export function StoreProvider({ children }) {
   useEffect(() => {
     async function loadCatalog() {
       const data = await catalogService.fetchCatalogData();
-      if (data.products && data.products.length > 0) setProducts(data.products);
-      if (data.games && data.games.length > 0) setGames(data.games);
+      if (data.products && data.products.length > 0) {
+        const existingIds = new Set(data.products.map(p => p.id));
+        const missing = initialProducts.filter(p => !existingIds.has(p.id));
+        setProducts([...data.products, ...missing]);
+      }
+      if (data.games && data.games.length > 0) {
+        setGames(data.games.map(g => {
+          const fallback = initialGames.find(fg => fg.id === g.id);
+          return {
+            ...fallback,
+            ...g,
+            categories: (g.categories && g.categories.length > 0) ? g.categories : (fallback?.categories || [])
+          };
+        }));
+      }
     }
     loadCatalog();
   }, []);
@@ -275,6 +290,12 @@ export function StoreProvider({ children }) {
     if (currency === 'ROBUX') {
       return `${Math.round(converted).toLocaleString()} R$`;
     }
+    if (currency === 'VND') {
+      return `${Math.round(converted).toLocaleString()} ₫`;
+    }
+    if (currency === 'JPY') {
+      return `¥${Math.round(converted).toLocaleString()}`;
+    }
     return `${activeRate.symbol}${converted.toFixed(2)}`;
   }, [currency]);
 
@@ -339,25 +360,60 @@ export function StoreProvider({ children }) {
   // ----------------------------------------------------
   // Roblox User & Modals State
   // ----------------------------------------------------
-  const [robloxUser, setRobloxUserState] = useState({
-    username: 'huypropsp',
-    displayName: 'huypropsp',
-    id: 424764173,
-    isValid: true,
-    isChecking: false,
-    avatarUrl: 'https://tr.rbxcdn.com/30DAY-AvatarHeadshot-86F813ED8BA2B5B7E9E04BE1E669B3C0-Png/150/150/AvatarHeadshot/Png/noFilter'
+  const [robloxUser, setRobloxUserState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ROBLOX_USER);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.isValid) return parsed;
+      }
+    } catch {}
+    return {
+      username: '',
+      displayName: '',
+      id: null,
+      isValid: false,
+      isChecking: false,
+      avatarUrl: '',
+      notFound: false
+    };
   });
+
+  const clearRobloxUser = useCallback(() => {
+    const emptyUser = {
+      username: '',
+      displayName: '',
+      id: null,
+      isValid: false,
+      isChecking: false,
+      avatarUrl: '',
+      notFound: false
+    };
+    setRobloxUserState(emptyUser);
+    try {
+      localStorage.removeItem(STORAGE_KEYS.ROBLOX_USER);
+    } catch {}
+    soundFx.click?.();
+  }, []);
 
   const lookupTimeoutRef = useRef(null);
 
   const setRobloxUsername = useCallback((username) => {
     const clean = (username || '').trim();
     if (!clean) {
-      setRobloxUserState({ username: '', displayName: '', id: null, isValid: false, avatarUrl: '', isChecking: false });
+      clearRobloxUser();
       return;
     }
 
-    setRobloxUserState(prev => ({ ...prev, username: clean, isChecking: true }));
+    setRobloxUserState({
+      username: clean,
+      displayName: clean,
+      id: null,
+      isValid: false,
+      isChecking: true,
+      avatarUrl: '',
+      notFound: false
+    });
 
     if (lookupTimeoutRef.current) {
       clearTimeout(lookupTimeoutRef.current);
@@ -367,7 +423,7 @@ export function StoreProvider({ children }) {
       try {
         const result = await fetchRobloxUser(clean);
         if (result && result.isValid) {
-          setRobloxUserState({
+          const validUser = {
             username: result.username,
             displayName: result.displayName,
             id: result.id,
@@ -375,15 +431,43 @@ export function StoreProvider({ children }) {
             isChecking: false,
             avatarUrl: result.avatarUrl,
             notFound: false
-          });
-        } else if (result && result.notFound) {
-          setRobloxUserState(prev => ({ ...prev, isChecking: false, notFound: true, isValid: false }));
+          };
+          setRobloxUserState(validUser);
+          try {
+            localStorage.setItem(STORAGE_KEYS.ROBLOX_USER, JSON.stringify(validUser));
+          } catch {}
+          soundFx.success?.();
+        } else {
+          const invalidUser = {
+            username: clean,
+            displayName: clean,
+            id: null,
+            isValid: false,
+            isChecking: false,
+            avatarUrl: '',
+            notFound: true,
+            errorMessage: result?.errorMessage || 'Player not found on Roblox'
+          };
+          setRobloxUserState(invalidUser);
+          try {
+            localStorage.removeItem(STORAGE_KEYS.ROBLOX_USER);
+          } catch {}
+          soundFx.error?.();
         }
       } catch (e) {
-        setRobloxUserState(prev => ({ ...prev, isChecking: false }));
+        setRobloxUserState({
+          username: clean,
+          displayName: clean,
+          id: null,
+          isValid: false,
+          isChecking: false,
+          avatarUrl: '',
+          notFound: true,
+          errorMessage: 'Roblox verification failed'
+        });
       }
     }, 350);
-  }, []);
+  }, [clearRobloxUser]);
 
   const [activeProductModal, setActiveProductModal] = useState(null);
   const openProductModal = useCallback((p) => { setActiveProductModal(p); triggerAudio('click'); }, [triggerAudio]);
@@ -639,6 +723,7 @@ export function StoreProvider({ children }) {
     // Roblox User
     robloxUser,
     setRobloxUsername,
+    clearRobloxUser,
 
     // Coupons
     appliedCoupon,

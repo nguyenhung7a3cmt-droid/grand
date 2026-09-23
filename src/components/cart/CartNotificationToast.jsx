@@ -5,7 +5,7 @@ import { useStore } from '../../context/StoreContext';
 import { soundFx } from '../../utils/soundFx';
 
 export default function CartNotificationToast() {
-  const { cartToast, setCartToast, openCart, formatPrice, cartCount, cartTotal } = useStore();
+  const { cartToast, setCartToast, openCart, formatPrice, cartCount, cartTotal, isCartOpen } = useStore();
 
   useEffect(() => {
     if (!cartToast) return;
@@ -15,7 +15,7 @@ export default function CartNotificationToast() {
     return () => clearTimeout(timer);
   }, [cartToast, setCartToast]);
 
-  if (!cartToast) return null;
+  if (!cartToast || isCartOpen) return null;
 
   const { product, quantity } = cartToast;
 
@@ -27,7 +27,7 @@ export default function CartNotificationToast() {
 
   return (
     <AnimatePresence>
-      <div className="fixed bottom-24 right-4 sm:right-6 z-[60] max-w-sm w-full pointer-events-auto">
+      <div className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 z-[60] pointer-events-auto">
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}

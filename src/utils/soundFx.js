@@ -5,8 +5,8 @@
 
 let audioCtx = null;
 
-function getAudioContext() {
-  if (typeof window === 'undefined') return null;
+function unlockAudio() {
+  if (typeof window === 'undefined') return;
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (AudioContextClass) {
@@ -14,8 +14,21 @@ function getAudioContext() {
     }
   }
   if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    audioCtx.resume().catch(() => {});
   }
+}
+
+if (typeof window !== 'undefined') {
+  const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown'];
+  const handleFirstInteraction = () => {
+    unlockAudio();
+    unlockEvents.forEach((ev) => window.removeEventListener(ev, handleFirstInteraction));
+  };
+  unlockEvents.forEach((ev) => window.addEventListener(ev, handleFirstInteraction, { passive: true }));
+}
+
+function getAudioContext() {
+  unlockAudio();
   return audioCtx;
 }
 
@@ -207,23 +220,44 @@ export const soundFx = {
     if (!this.isEnabled()) return;
     const ctx = getAudioContext();
     if (!ctx) return;
-    try {
-      const now = ctx.currentTime;
-      const chord = [523.25, 659.25, 783.99, 1046.50];
-      chord.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const t = now + idx * 0.038;
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.09, t);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(t);
-        osc.stop(t + 0.14);
-      });
-    } catch (e) {}
+
+    const playChime = () => {
+      try {
+        const now = ctx.currentTime;
+        const chord = [523.25, 659.25, 783.99, 1046.50];
+        chord.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const t = now + idx * 0.042;
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.22, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.16);
+
+          // Rich crystal harmonic
+          const harm = ctx.createOscillator();
+          const harmGain = ctx.createGain();
+          harm.type = 'sine';
+          harm.frequency.setValueAtTime(freq * 2, t);
+          harmGain.gain.setValueAtTime(0.08, t);
+          harmGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+          harm.connect(harmGain);
+          harmGain.connect(ctx.destination);
+          harm.start(t);
+          harm.stop(t + 0.12);
+        });
+      } catch (e) {}
+    };
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(playChime).catch(playChime);
+    } else {
+      playChime();
+    }
   },
 
   // 4. Instant Buy Hyperdrive Zap (Sawtooth sweep with sub bass punch)

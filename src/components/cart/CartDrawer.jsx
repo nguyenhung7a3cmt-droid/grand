@@ -269,9 +269,9 @@ export default function CartDrawer() {
                         setUsernameInput('');
                         clearRobloxUser();
                       }}
-                      className="text-[10px] text-gs-muted hover:text-red-400 transition-colors shrink-0"
+                      className="px-2 py-1 rounded bg-red-950/40 border border-red-500/30 text-[10px] text-red-400 hover:text-red-300 hover:bg-red-950/60 font-mono font-bold transition-all shrink-0 cursor-pointer"
                     >
-                      Change
+                      Disconnect
                     </button>
                   </motion.div>
                 )}

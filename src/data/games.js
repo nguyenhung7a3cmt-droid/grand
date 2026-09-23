@@ -15,6 +15,7 @@ export const games = [
       { id: 'permanent-fruits', name: 'Permanent Fruits', emoji: '🍇' },
       { id: 'physical-fruits', name: 'Physical Fruits', emoji: '🍎' },
       { id: 'gamepasses', name: 'Gamepasses & Items', emoji: '🎫' },
+      { id: 'swords', name: 'Swords & Melee', emoji: '⚔️' },
       { id: 'bundles', name: 'Bundles & Accounts', emoji: '🎁' }
     ]
   },

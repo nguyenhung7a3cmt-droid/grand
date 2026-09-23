@@ -107,11 +107,15 @@ export default function AuthModal() {
     triggerAudio?.('click');
 
     try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (mode === 'login') {
-        if (!email.trim() || !email.includes('@')) throw new Error('Please enter a valid email address');
+        if (!email.trim() || !emailRegex.test(email.trim())) throw new Error('Please enter a valid email address (e.g. name@domain.com)');
         if (password.length < 5 || password.length > 16) throw new Error('Password must be between 5 and 16 characters long');
 
-        const res = await login(email, password);
+        const res = await login(email.trim(), password);
+        if (!res || !res.success) {
+          throw new Error(res?.error || 'Invalid email address or password');
+        }
         triggerAudio?.('success');
         if (res.user?.robloxUsername) {
           setRobloxUsername(res.user.robloxUsername);
@@ -119,7 +123,7 @@ export default function AuthModal() {
         closeAuthModal();
       } else if (mode === 'register') {
         if (!name.trim()) throw new Error('Please enter your full name');
-        if (!email.trim() || !email.includes('@')) throw new Error('Please enter a valid email address');
+        if (!email.trim() || !emailRegex.test(email.trim())) throw new Error('Please enter a valid email address (e.g. name@domain.com)');
         if (password.length < 5 || password.length > 16) throw new Error('Password must be between 5 and 16 characters long');
 
         const res = await registerRequestOTP({
@@ -368,7 +372,7 @@ export default function AuthModal() {
 
           {/* Error & Success Messages */}
           {errorMsg && (
-            <div className="mt-3 p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-red-400 text-xs flex items-center gap-2">
+            <div data-testid="auth-error" className="mt-3 p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-red-400 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
