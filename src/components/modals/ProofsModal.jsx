@@ -38,6 +38,17 @@ const GAMES_LIST = [
   { id: 'brainrot', name: 'Steal a Brainrot', icon: '🧠' }
 ];
 
+function getGameIcon(gameName = '') {
+  const g = String(gameName).toLowerCase();
+  if (g.includes('blox')) return '⚔️';
+  if (g.includes('grand') || g.includes('gpo') || g.includes('piece')) return '🌊';
+  if (g.includes('murder') || g.includes('mm2')) return '🔪';
+  if (g.includes('fisch')) return '🎣';
+  if (g.includes('brainrot')) return '🧠';
+  if (g.includes('defenders') || g.includes('anime')) return '🛡️';
+  return '🎮';
+}
+
 export default function ProofsModal() {
   const { isProofsModalOpen, closeProofsModal, triggerAudio } = useStore();
   const { isAdmin, isStaff } = useAuth();
@@ -214,121 +225,132 @@ export default function ProofsModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-hidden select-none">
+    <div className="fixed inset-0 z-[100] flex sm:items-center sm:justify-center p-0 sm:p-4 md:p-6 bg-black/90 backdrop-blur-md overflow-hidden select-none">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        initial={{ opacity: 0, scale: 0.96, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.25 }}
-        className="relative bg-gs-card border border-gs-border rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden"
+        exit={{ opacity: 0, scale: 0.96, y: 15 }}
+        transition={{ duration: 0.2 }}
+        className="relative bg-gs-card border-0 sm:border border-gs-border rounded-none sm:rounded-2xl md:rounded-3xl shadow-2xl w-full max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col overflow-hidden"
       >
         {/* Header */}
-        <div className="p-5 sm:p-6 border-b border-gs-border flex items-center justify-between shrink-0 bg-gs-raised/60">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <ShieldCheck className="w-5 h-5" />
+        <div className="p-3 sm:p-4.5 border-b border-gs-border flex items-center justify-between shrink-0 bg-gs-raised/70">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-heading font-black text-lg sm:text-xl text-white uppercase tracking-tight">
-                  Public Proofs &amp; Reputation Ledger
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <h2 className="font-heading font-black text-xs sm:text-base md:text-lg text-white uppercase tracking-tight truncate">
+                  Proofs &amp; Reputation
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                <span className="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 inline-flex items-center gap-1 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>{combinedLedger.length} VERIFIED</span>
                 </span>
               </div>
-              <p className="text-xs text-gs-muted font-sans mt-0.5">
+              <p className="hidden sm:block text-xs text-gs-muted font-sans mt-0.5 truncate">
                 Official delivery proof screenshots and live vouches automatically fetched from Discord #vouches
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#8ea1e1] text-[11px] font-mono font-medium shrink-0">
-              <span className="w-2 h-2 rounded-full bg-[#5865F2] animate-pulse shrink-0 shadow-[0_0_8px_#5865F2]" />
-              <span className="hidden sm:inline font-bold">DISCORD BOT:</span>
-              <span className="text-white font-bold">AUTO-SYNCED</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#8ea1e1] text-[10px] sm:text-[11px] font-mono font-medium shrink-0">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#5865F2] animate-pulse shrink-0 shadow-[0_0_8px_#5865F2]" />
+              <span className="hidden sm:inline font-bold">DISCORD:</span>
+              <span className="text-white font-bold">LIVE-SYNC</span>
             </div>
 
             <button
               onClick={closeProofsModal}
-              className="p-2 rounded-xl text-gs-muted hover:text-white hover:bg-gs-raised transition-colors cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-gs-muted hover:text-white bg-white/5 hover:bg-white/10 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
+              aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
         {/* Source Switcher & Filter Hub */}
-        <div className="p-4 sm:p-5 border-b border-gs-border bg-[#090a10] space-y-3 shrink-0">
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div className="p-2 sm:p-3.5 border-b border-gs-border bg-[#090a10] space-y-2 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
             
             {/* Multi-Source Switcher Pills */}
-            <div className="flex items-center p-1 rounded-xl bg-black/70 border border-gs-border/80 overflow-x-auto max-w-full no-scrollbar">
+            <div className="grid grid-cols-3 sm:flex items-center p-1 rounded-xl bg-black/70 border border-gs-border/80 gap-1 shrink-0">
               <button
                 type="button"
-                onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('screenshots'); triggerAudio?.('click'); }}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+                onMouseEnter={() => soundFx.tabHover()}
+                onClick={() => { setSourceTab('screenshots'); triggerAudio?.('click'); }}
+                className={`px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                   sourceTab === 'screenshots'
                     ? 'bg-emerald-600 text-white shadow-glow-success'
                     : 'text-gs-muted hover:text-emerald-400'
                 }`}
               >
-                <Camera className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Trade Screenshots ({proofs.length})</span>
-                <span className="sm:hidden">Screenshots ({proofs.length})</span>
+                <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                <span className="truncate">Trades ({proofs.length})</span>
               </button>
 
               <button
                 type="button"
-                onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('discord'); triggerAudio?.('click'); }}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+                onMouseEnter={() => soundFx.tabHover()}
+                onClick={() => { setSourceTab('discord'); triggerAudio?.('click'); }}
+                className={`px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                   sourceTab === 'discord'
                     ? 'bg-[#5865F2] text-white shadow-[0_0_15px_rgba(88,101,242,0.4)]'
                     : 'text-gs-muted hover:text-[#8ea1e1]'
                 }`}
               >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Discord #vouches ({reviews.length})</span>
-                <span className="sm:hidden">Discord ({reviews.length})</span>
+                <MessageSquare className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                <span className="truncate">Discord ({reviews.length})</span>
               </button>
 
               <button
                 type="button"
-                onMouseEnter={() => soundFx.tabHover()} onClick={() => { setSourceTab('all'); triggerAudio?.('click'); }}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
+                onMouseEnter={() => soundFx.tabHover()}
+                onClick={() => { setSourceTab('all'); triggerAudio?.('click'); }}
+                className={`px-2 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap ${
                   sourceTab === 'all'
                     ? 'bg-gs-primary text-white shadow-glow-primary'
                     : 'text-gs-muted hover:text-white'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>All ({combinedLedger.length})</span>
+                <Layers className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                <span className="truncate">All ({combinedLedger.length})</span>
               </button>
             </div>
 
             {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gs-muted" />
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gs-muted" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by username, item or keyword..."
-                className="w-full bg-gs-card border border-gs-border rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gs-muted focus:outline-hidden focus:border-emerald-500/60"
+                placeholder="Filter by user or item..."
+                className="w-full bg-gs-card border border-gs-border rounded-xl pl-8 pr-7 py-1.5 text-xs text-white placeholder-gs-muted focus:outline-hidden focus:border-emerald-500/60"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gs-muted hover:text-white p-1"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
           </div>
 
           {/* Game Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-0.5 no-scrollbar touch-pan-x">
             {GAMES_LIST.map(g => (
               <button
                 key={g.id}
                 type="button"
-                onMouseEnter={() => soundFx.pillHover()} onClick={() => { setFilterGame(g.id); triggerAudio?.('click'); }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${
+                onMouseEnter={() => soundFx.pillHover()}
+                onClick={() => { setFilterGame(g.id); triggerAudio?.('click'); }}
+                className={`px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1 shrink-0 ${
                   filterGame === g.id
                     ? 'bg-gs-raised border-emerald-500/80 text-white shadow-xs'
                     : 'bg-black/50 border-gs-border/60 text-gs-muted hover:text-white hover:border-gs-border'
@@ -349,136 +371,141 @@ export default function ProofsModal() {
               setVisibleCount((prev) => Math.min(prev + 24, filteredItems.length));
             }
           }}
-          className="p-4 sm:p-6 overflow-y-auto flex-1 overscroll-contain"
+          className="p-2.5 sm:p-4 overflow-y-auto flex-1 overscroll-contain"
         >
           {filteredItems.length === 0 ? (
-            <div className="py-16 text-center space-y-3">
-              <ShieldCheck className="w-12 h-12 text-gs-muted mx-auto opacity-40" />
-              <p className="text-sm text-gs-muted font-heading font-bold">No delivery records found</p>
-              <p className="text-xs text-gs-muted font-sans">Try selecting a different game category or clearing your search.</p>
+            <div className="py-12 sm:py-16 text-center space-y-3">
+              <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-gs-muted mx-auto opacity-40" />
+              <p className="text-xs sm:text-sm text-gs-muted font-heading font-bold">No delivery records found</p>
+              <p className="text-[11px] sm:text-xs text-gs-muted font-sans">Try selecting a different game category or clearing your search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
               {filteredItems.slice(0, visibleCount).map((item) => {
                 const isDiscord = item.source === 'discord';
 
                 return (
                   <div
                     key={item.id}
-                    style={{ contentVisibility: 'auto', containIntrinsicSize: '0 260px' }}
+                    style={{ contentVisibility: 'auto', containIntrinsicSize: '0 140px' }}
                     onMouseEnter={() => soundFx.vouchHover()}
                     onClick={() => handleOpenReceipt(item)}
-                    className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 group relative overflow-hidden ${
+                    className={`p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-2 group relative overflow-hidden ${
                       isDiscord
-                        ? 'bg-[#0b0d18]/90 border-[#5865F2]/30 hover:border-[#5865F2]/70 hover:shadow-[0_0_20px_rgba(88,101,242,0.2)]'
-                        : 'bg-[#090a10]/90 border-emerald-500/30 hover:border-emerald-500/70 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                        ? 'bg-[#0b0d18]/90 border-[#5865F2]/25 hover:border-[#5865F2]/70 hover:shadow-[0_0_20px_rgba(88,101,242,0.2)]'
+                        : 'bg-[#090a10]/90 border-emerald-500/25 hover:border-emerald-500/70 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]'
                     }`}
                   >
                     {/* Top Header */}
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-heading font-black text-white text-sm">
+                      <span className="font-heading font-black text-white text-xs sm:text-sm tracking-tight truncate">
                         {item.orderNumber}
                       </span>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {isDiscord ? (
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#5865F2]/20 text-[#8ea1e1] border border-[#5865F2]/40 flex items-center gap-1">
+                          <span className="px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-mono font-bold bg-[#5865F2]/20 text-[#8ea1e1] border border-[#5865F2]/40 flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#23a55a]" />
-                            <span>DISCORD VOUCH</span>
+                            <span>VOUCH</span>
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
+                          <span className="px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" />
-                            <span>VERIFIED TRADE</span>
+                            <span>VERIFIED</span>
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Screenshot Preview if available */}
-                    {item.proofScreenshot ? (
-                      <div className="relative rounded-xl overflow-hidden h-36 min-h-[144px] bg-[#0d0f17] border border-gs-border/80 group-hover:border-emerald-500/40 transition-colors">
-                        <img
-                          src={item.proofScreenshot}
-                          alt=""
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = generateSvgTradeProof({
-                              orderNumber: item.orderNumber,
-                              buyerMasked: item.buyerMasked,
-                              staffName: item.staffName,
-                              item: item.item,
-                              game: item.game,
-                              amount: item.amount
-                            });
-                          }}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                        
-                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/20 text-[9px] font-mono text-emerald-400 font-bold flex items-center gap-1 z-10 pointer-events-none">
-                          <Camera className="w-3 h-3 text-emerald-400" />
-                          <span>Staff Screenshot</span>
+                    {/* Card Content Body */}
+                    {!isDiscord ? (
+                      /* Trade Screenshot / Handshake Content */
+                      <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-black/60 border border-emerald-500/20 space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-sm shrink-0">
+                              {getGameIcon(item.game)}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-heading font-black text-white text-xs sm:text-sm truncate">
+                                {item.item}
+                              </div>
+                              <div className="text-[10px] font-mono text-emerald-400 font-semibold truncate">
+                                {item.game}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            <span className="font-mono font-black text-emerald-400 text-xs sm:text-sm block">
+                              {item.amount}
+                            </span>
+                            <span className="text-[9px] font-mono text-gs-muted block">
+                              ESCROW
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-white text-xs z-10 pointer-events-none">
-                          <span className="font-heading font-bold truncate text-[11px] drop-shadow-md">
-                            {item.item}
-                          </span>
-                          <span className="font-mono font-bold text-emerald-400 text-xs shrink-0 drop-shadow-md">
-                            {item.amount}
-                          </span>
+                        <div className="px-2 py-1 rounded bg-[#0d0f17] border border-white/5 flex items-center justify-between text-[10px] font-mono text-gs-muted">
+                          <span className="truncate">Staff: <strong className="text-slate-300 font-medium">{item.staffName}</strong></span>
+                          <span className="text-emerald-400 font-bold shrink-0">✓ Delivered</span>
                         </div>
                       </div>
                     ) : (
                       /* Discord Message Card Body */
-                      <div className="p-3 rounded-xl bg-black/50 border border-gs-border/60 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="relative w-8 h-8 rounded-lg bg-gs-raised border border-gs-border overflow-hidden shrink-0">
-                            <img
-                              src={item.buyerAvatar}
-                              alt=""
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%236366f1"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <div className="font-heading font-bold text-white text-xs">
-                              @{item.buyerMasked}
+                      <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-black/50 border border-[#5865F2]/20 space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="relative w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gs-raised border border-gs-border overflow-hidden shrink-0">
+                              <img
+                                src={item.buyerAvatar}
+                                alt=""
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%236366f1"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+                                }}
+                              />
                             </div>
-                            <div className="flex text-amber-400 text-[10px]">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                              ))}
+                            <div className="min-w-0">
+                              <div className="font-heading font-bold text-white text-xs truncate">
+                                @{item.buyerMasked}
+                              </div>
+                              <div className="flex text-amber-400 text-[10px]">
+                                {[...Array(item.stars || 5)].map((_, i) => (
+                                  <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                                ))}
+                              </div>
                             </div>
                           </div>
+
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#5865F2]/15 text-[#8ea1e1] border border-[#5865F2]/30 shrink-0">
+                            #vouches
+                          </span>
                         </div>
 
-                        <p className="text-xs text-gs-light/90 italic line-clamp-2">
+                        <p className="text-[11px] sm:text-xs text-gs-light/90 italic line-clamp-2 px-2 py-1 rounded bg-black/40 border border-white/5">
                           "{item.tradeNotes}"
                         </p>
                       </div>
                     )}
 
                     {/* Footer */}
-                    <div className="pt-2 border-t border-gs-border/60 flex items-center justify-between text-xs">
-                      <div className="text-[11px] text-gs-muted font-sans truncate flex items-center gap-1.5">
+                    <div className="pt-1.5 border-t border-gs-border/60 flex items-center justify-between text-xs">
+                      <div className="text-[10px] sm:text-[11px] text-gs-muted font-sans truncate flex items-center gap-1.5">
                         <CountryFlag code={item.countryCode || 'US'} name={item.countryName || 'Verified'} variant="circle" size="xs" />
-                        <span>@{item.buyerMasked}</span>
-                        <span className="mx-1">•</span>
-                        <span>{item.game}</span>
+                        <span className="truncate">@{item.buyerMasked}</span>
+                        <span className="mx-0.5">•</span>
+                        <span className="truncate">{item.game}</span>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {canManageProofs && item.source === 'screenshot' && (
                           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                             <button
                               type="button"
                               onClick={(e) => handleOpenAdminEdit(item, e)}
-                              className="px-2 py-0.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 text-[10px] font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                              className="px-1.5 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 text-[9px] font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
                               title="Edit this proof record"
                             >
                               <Edit3 className="w-2.5 h-2.5" />
@@ -487,7 +514,7 @@ export default function ProofsModal() {
                             <button
                               type="button"
                               onClick={(e) => handleAdminDelete(item.id, e)}
-                              className="p-1 rounded-md bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 transition-colors cursor-pointer"
+                              className="p-1 rounded bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 transition-colors cursor-pointer"
                               title="Delete this proof"
                             >
                               <Trash2 className="w-2.5 h-2.5" />
@@ -495,9 +522,9 @@ export default function ProofsModal() {
                           </div>
                         )}
 
-                        <div className="text-[11px] font-heading font-bold text-emerald-400 flex items-center gap-1 shrink-0 group-hover:translate-x-1 transition-transform">
-                          <span>Details</span>
-                          <ExternalLink className="w-3 h-3" />
+                        <div className="text-[10px] sm:text-[11px] font-heading font-bold text-emerald-400 flex items-center gap-1 shrink-0 group-hover:translate-x-0.5 transition-transform">
+                          <span>Receipt</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
                         </div>
                       </div>
                     </div>
@@ -507,11 +534,11 @@ export default function ProofsModal() {
               })}
 
               {visibleCount < filteredItems.length && (
-                <div className="col-span-full pt-4 pb-2 flex justify-center">
+                <div className="col-span-full pt-3 pb-1 flex justify-center">
                   <button
                     type="button"
                     onClick={() => setVisibleCount((prev) => Math.min(prev + 36, filteredItems.length))}
-                    className="px-6 py-2.5 rounded-xl bg-gs-raised hover:bg-gs-card border border-gs-border/80 text-xs font-heading font-bold text-emerald-400 hover:text-white transition-all cursor-pointer flex items-center gap-2 shadow-sm"
+                    className="px-5 py-2 rounded-xl bg-gs-raised hover:bg-gs-card border border-gs-border/80 text-xs font-heading font-bold text-emerald-400 hover:text-white transition-all cursor-pointer flex items-center gap-2 shadow-xs"
                   >
                     <span>Load More Proofs ({filteredItems.length - visibleCount} remaining)</span>
                   </button>
@@ -522,18 +549,18 @@ export default function ProofsModal() {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-gs-border bg-gs-raised/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gs-muted shrink-0">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>All buyer usernames enforce cryptographic masking to protect player privacy.</span>
+        <div className="p-2.5 sm:p-3.5 border-t border-gs-border bg-gs-raised/60 flex items-center justify-between text-xs text-gs-muted shrink-0">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="truncate">Cryptographic masking active to protect player privacy.</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <a
               href="https://discord.gg/tanstock"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#8ea1e1] hover:text-white font-heading font-bold flex items-center gap-1 transition-colors"
+              className="text-[#8ea1e1] hover:text-white font-heading font-bold flex items-center gap-1 text-[10px] sm:text-xs transition-colors"
             >
               <span>discord.gg/tanstock</span>
               <ExternalLink className="w-3 h-3" />
@@ -541,7 +568,7 @@ export default function ProofsModal() {
 
             <button
               onClick={closeProofsModal}
-              className="px-5 py-2 rounded-xl bg-gs-card hover:bg-gs-raised border border-gs-border text-white text-xs font-heading font-bold cursor-pointer"
+              className="hidden sm:inline-flex px-4 py-1.5 rounded-xl bg-gs-card hover:bg-gs-raised border border-gs-border text-white text-xs font-heading font-bold cursor-pointer transition-colors"
             >
               Close Ledger
             </button>
