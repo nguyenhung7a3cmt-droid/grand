@@ -51,9 +51,8 @@ export default function PhotoProofReceipt({ order, onClose }) {
   });
 
   const rawScreenshot = order.proofScreenshot;
-  const initialProof = (rawScreenshot && !rawScreenshot.includes('cdn.discordapp.com/attachments/'))
-    ? rawScreenshot
-    : defaultSvgProof;
+  const cleanScreenshot = rawScreenshot ? rawScreenshot.replace(/%2523/g, '%23') : null;
+  const initialProof = cleanScreenshot || defaultSvgProof;
 
   const [currentImgSrc, setCurrentImgSrc] = useState(initialProof);
   const tradeNotes = order.tradeNotes || `In-game trade hand-delivered to @${buyerName}. Verification PIN verified.`;

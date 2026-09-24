@@ -8,6 +8,8 @@ import fs from 'fs';
 import path from 'path';
 import http from 'http';
 import { getDB } from './database.js';
+import { makeImagePermanent } from './imageUploader.js';
+import { generateSvgTradeProof } from '../utils/tradeProofGenerator.js';
 
 function loadEnv() {
   const envFile = path.resolve(process.cwd(), '.env');
@@ -88,7 +90,7 @@ function parseRating(content = '') {
   return 5;
 }
 
-function saveVouchesToDatabase(vouches) {
+async function saveVouchesToDatabase(vouches) {
   const db = getDB();
   const now = new Date().toISOString();
   let reviewsInserted = 0;
@@ -122,6 +124,29 @@ function saveVouchesToDatabase(vouches) {
       if (proofScreenshot) {
         const orderNum = `GS-DISC-${String(msgId).slice(-6)}`;
         const pId = `PROOF-${orderNum}`;
+
+        let finalScreenshot = proofScreenshot;
+        if (proofScreenshot.startsWith('http://') || proofScreenshot.startsWith('https://')) {
+          try {
+            const permUrl = await makeImagePermanent(proofScreenshot, orderNum);
+            finalScreenshot = permUrl || generateSvgTradeProof({
+              orderNumber: orderNum,
+              buyerMasked: maskedName,
+              game,
+              item,
+              amount: '$19.99'
+            });
+          } catch (e) {
+            finalScreenshot = generateSvgTradeProof({
+              orderNumber: orderNum,
+              buyerMasked: maskedName,
+              game,
+              item,
+              amount: '$19.99'
+            });
+          }
+        }
+
         db.prepare(`
           INSERT INTO proofs (id, order_number, buyer_username, buyer_masked, buyer_avatar, country_code, country_name, staff_name, staff_avatar, staff_badge, game, item, item_image, proof_screenshot, amount, timestamp, verified, audit_id, audit_signature, trade_notes, created_at)
           VALUES (?, ?, ?, ?, ?, 'US', 'United States', 'Discord Staff', NULL, 'DISCORD VOUCH', ?, ?, '/items/bf-perm-kitsune.png', ?, '$19.99', 'Discord Verified', 1, ?, 'SIG-GS-DISCORD-VOUCH', ?, ?)
@@ -136,7 +161,7 @@ function saveVouchesToDatabase(vouches) {
           authorAvatar,
           game,
           item,
-          proofScreenshot,
+          finalScreenshot,
           `GS-AUDIT-${orderNum}`,
           comment,
           createdAt
@@ -250,7 +275,7 @@ export async function syncAllDiscordVouches() {
 
   if (parsedVouches.length > 0) {
     console.log(`🚀 Uploading ${parsedVouches.length} vouches directly to GrandStock SQLite Database...`);
-    const result = saveVouchesToDatabase(parsedVouches);
+    const result = await saveVouchesToDatabase(parsedVouches);
     console.log(`\n🎉 SUCCESS: ${result.message}`);
     console.log(`📈 Website now has ${result.totalReviews} live reviews and ${result.totalProofs} live delivery proofs!`);
     return result;

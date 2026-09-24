@@ -11,6 +11,8 @@ import https from 'https';
 import crypto from 'crypto';
 import { getDB } from './database.js';
 import { getClientIP, resolveCountry, maskIP } from './geoHelper.js';
+import { makeImagePermanent } from './imageUploader.js';
+import { generateSvgTradeProof } from '../utils/tradeProofGenerator.js';
 
 const FLAG_MAP = {
   'VN': '🇻🇳', 'US': '🇺🇸', 'PH': '🇵🇭', 'TH': '🇹🇭', 'ID': '🇮🇩',
@@ -1211,6 +1213,16 @@ export function catalogPlugin() {
           if (proofScreenshot) {
             const orderNum = `GS-DISC-${Math.floor(100000 + Math.random() * 900000)}`;
             const pId = `PROOF-${orderNum}`;
+            let finalScreenshot = proofScreenshot;
+            if (proofScreenshot.startsWith('http://') || proofScreenshot.startsWith('https://')) {
+              try {
+                const perm = await makeImagePermanent(proofScreenshot, orderNum);
+                finalScreenshot = perm || generateSvgTradeProof({ orderNumber: orderNum, buyerMasked: maskedName, game, item, amount: '$19.99' });
+              } catch (e) {
+                finalScreenshot = generateSvgTradeProof({ orderNumber: orderNum, buyerMasked: maskedName, game, item, amount: '$19.99' });
+              }
+            }
+
             db.prepare(`
               INSERT INTO proofs (id, order_number, buyer_username, buyer_masked, buyer_avatar, country_code, country_name, staff_name, staff_avatar, staff_badge, game, item, item_image, proof_screenshot, amount, timestamp, verified, audit_id, audit_signature, trade_notes, created_at)
               VALUES (?, ?, ?, ?, ?, ?, ?, 'Discord Staff', NULL, 'DISCORD VOUCH', ?, ?, '/items/bf-perm-kitsune.png', ?, '$19.99', 'Discord Verified', 1, ?, 'SIG-GS-DISCORD-VOUCH', ?, ?)
@@ -1224,7 +1236,7 @@ export function catalogPlugin() {
               body.countryName || geo.name,
               game,
               item,
-              proofScreenshot,
+              finalScreenshot,
               `GS-AUDIT-${orderNum}`,
               comment,
               now
@@ -1288,6 +1300,16 @@ export function catalogPlugin() {
               if (proofScreenshot) {
                 const orderNum = `GS-DISC-${Math.floor(100000 + Math.random() * 900000)}`;
                 const pId = `PROOF-${orderNum}`;
+                let finalScreenshot = proofScreenshot;
+                if (proofScreenshot.startsWith('http://') || proofScreenshot.startsWith('https://')) {
+                  try {
+                    const perm = await makeImagePermanent(proofScreenshot, orderNum);
+                    finalScreenshot = perm || generateSvgTradeProof({ orderNumber: orderNum, buyerMasked: maskedName, game, item, amount: '$19.99' });
+                  } catch (e) {
+                    finalScreenshot = generateSvgTradeProof({ orderNumber: orderNum, buyerMasked: maskedName, game, item, amount: '$19.99' });
+                  }
+                }
+
                 db.prepare(`
                   INSERT INTO proofs (id, order_number, buyer_username, buyer_masked, buyer_avatar, country_code, country_name, staff_name, staff_avatar, staff_badge, game, item, item_image, proof_screenshot, amount, timestamp, verified, audit_id, audit_signature, trade_notes, created_at)
                   VALUES (?, ?, ?, ?, ?, 'US', 'United States', 'Discord Staff', NULL, 'DISCORD VOUCH', ?, ?, '/items/bf-perm-kitsune.png', ?, '$19.99', 'Discord Verified', 1, ?, 'SIG-GS-DISCORD-VOUCH', ?, ?)
@@ -1299,7 +1321,7 @@ export function catalogPlugin() {
                   authorAvatar,
                   game,
                   item,
-                  proofScreenshot,
+                  finalScreenshot,
                   `GS-AUDIT-${orderNum}`,
                   comment,
                   createdAt
