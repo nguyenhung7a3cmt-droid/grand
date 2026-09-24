@@ -34,6 +34,8 @@ import { useStore } from './context/StoreContext';
 import { DialogProvider } from './context/DialogContext';
 import CustomDialogModal from './components/common/CustomDialogModal';
 
+import MobileBottomNav from './components/layout/MobileBottomNav';
+
 export default function App() {
   const {
     selectedReceiptOrder,
@@ -103,7 +105,7 @@ export default function App() {
 
   return (
     <DialogProvider>
-    <div className="min-h-screen bg-gs-dark text-gs-light font-sans relative overflow-x-hidden selection:bg-gs-primary selection:text-white">
+    <div className="min-h-screen bg-gs-dark text-gs-light font-sans relative overflow-x-clip selection:bg-gs-primary selection:text-white">
       {/* Site Owner / Admin In-Place CMS Toolbar */}
       <AmbientGlowCanvas />
       <AdminLiveBar />
@@ -112,7 +114,7 @@ export default function App() {
       <Navbar />
 
       {/* Main Storefront Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 lg:pb-8 space-y-8">
         <HeroBanner />
         {/* 100% Verified Customer Vouches & Social Proof - Placed Prominently Before Catalog */}
         <CustomerReviews />
@@ -122,7 +124,9 @@ export default function App() {
       </main>
 
       {/* Global High-Tech Footer */}
-      <Footer />
+      <div className="pb-20 lg:pb-0">
+        <Footer />
+      </div>
 
       {/* Modals & Drawers */}
       <ProductModal />
@@ -156,6 +160,9 @@ export default function App() {
 
       {/* Floating Ticker */}
       <LivePurchaseTicker />
+
+      {/* Persistent Mobile Bottom Navigation Dock */}
+      <MobileBottomNav />
 
       {/* Global Custom Styled Dialog Modal */}
       <CustomDialogModal />

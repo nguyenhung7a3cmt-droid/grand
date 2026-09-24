@@ -23,7 +23,7 @@ export default function FloatingCartButton() {
         animate={{ scale: [1, 1.15, 1], opacity: 1, y: 0 }}
         exit={{ scale: 0.8, opacity: 0, y: 20 }}
         transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-        className="fixed bottom-6 right-5 sm:right-6 z-40 pointer-events-auto"
+        className="fixed bottom-6 right-5 sm:right-6 z-30 pointer-events-auto hidden sm:block"
       >
         <button
           type="button"
