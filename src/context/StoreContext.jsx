@@ -249,6 +249,7 @@ export function StoreProvider({ children }) {
     });
     setCartToast({ product, quantity: qty, timestamp: Date.now() });
     setCartBounceKey(prev => prev + 1);
+    soundFx.addToCart();
   }, []);
 
   const removeFromCart = useCallback((productId) => {

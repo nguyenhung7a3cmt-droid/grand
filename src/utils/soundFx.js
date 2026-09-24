@@ -3,6 +3,8 @@
 // Zero-latency, mathematically synthesized acoustic signatures for every interaction.
 // ============================================================================
 
+import { CART_CHIME_DATA_URI } from './cartChimeBase64';
+
 let audioCtx = null;
 
 function unlockAudio() {
@@ -19,12 +21,21 @@ function unlockAudio() {
 }
 
 if (typeof window !== 'undefined') {
-  const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown'];
+  const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown', 'mousedown'];
   const handleFirstInteraction = () => {
     unlockAudio();
-    unlockEvents.forEach((ev) => window.removeEventListener(ev, handleFirstInteraction));
+    try {
+      if (audioCtx) {
+        const buffer = audioCtx.createBuffer(1, 1, 22050);
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+      }
+    } catch (e) {}
+    unlockEvents.forEach((ev) => window.removeEventListener(ev, handleFirstInteraction, true));
   };
-  unlockEvents.forEach((ev) => window.addEventListener(ev, handleFirstInteraction, { passive: true }));
+  unlockEvents.forEach((ev) => window.addEventListener(ev, handleFirstInteraction, { capture: true, passive: true }));
 }
 
 function getAudioContext() {
@@ -216,48 +227,73 @@ export const soundFx = {
   },
 
   // 3. Add to Cart Quad-Ascending Chime (C5 -> E5 -> G5 -> C6 with harmonic shimmer)
+  _lastAddToCartTime: 0,
   addToCart() {
     if (!this.isEnabled()) return;
-    const ctx = getAudioContext();
-    if (!ctx) return;
+    const nowMs = performance.now();
+    if (nowMs - this._lastAddToCartTime < 60) return;
+    this._lastAddToCartTime = nowMs;
 
-    const playChime = () => {
-      try {
-        const now = ctx.currentTime;
-        const chord = [523.25, 659.25, 783.99, 1046.50];
-        chord.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          const t = now + idx * 0.042;
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
-          gain.gain.setValueAtTime(0.22, t);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(t);
-          osc.stop(t + 0.16);
+    // A. Direct Media Audio Playback (/cart_chime.wav static file primary, CART_CHIME_DATA_URI fallback)
+    try {
+      if (typeof window !== 'undefined' && typeof Audio !== 'undefined') {
+        const audio = new Audio('/cart_chime.wav');
+        audio.volume = 1.0;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            try {
+              const fallback = new Audio(CART_CHIME_DATA_URI);
+              fallback.volume = 1.0;
+              fallback.play().catch(() => {});
+            } catch (err) {}
+          });
+        }
+      }
+    } catch (e) {}
 
-          // Rich crystal harmonic
-          const harm = ctx.createOscillator();
-          const harmGain = ctx.createGain();
-          harm.type = 'sine';
-          harm.frequency.setValueAtTime(freq * 2, t);
-          harmGain.gain.setValueAtTime(0.08, t);
-          harmGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
-          harm.connect(harmGain);
-          harmGain.connect(ctx.destination);
-          harm.start(t);
-          harm.stop(t + 0.12);
-        });
-      } catch (e) {}
-    };
+    // B. Real-time Mathematical Synthesizer (Instantaneous hardware DAC output)
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
 
-    if (ctx.state === 'suspended') {
-      ctx.resume().then(playChime).catch(playChime);
-    } else {
-      playChime();
-    }
+      const playChord = () => {
+        try {
+          const now = ctx.currentTime;
+          const chord = [523.25, 659.25, 783.99, 1046.50];
+          chord.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const t = now + idx * 0.045;
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.35, t);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.20);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.20);
+
+            // Rich crystal harmonic
+            const harm = ctx.createOscillator();
+            const harmGain = ctx.createGain();
+            harm.type = 'sine';
+            harm.frequency.setValueAtTime(freq * 2, t);
+            harmGain.gain.setValueAtTime(0.16, t);
+            harmGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+            harm.connect(harmGain);
+            harmGain.connect(ctx.destination);
+            harm.start(t);
+            harm.stop(t + 0.16);
+          });
+        } catch (err) {}
+      };
+
+      if (ctx.state === 'suspended') {
+        ctx.resume().then(playChord).catch(() => {});
+      }
+      playChord();
+    } catch (e) {}
   },
 
   // 4. Instant Buy Hyperdrive Zap (Sawtooth sweep with sub bass punch)

@@ -50,8 +50,7 @@ export function securityRateLimiter() {
     // Apply Security Response Headers (Anti-Clickjacking, Anti-Sniffing, Anti-Iframe, CSP, HSTS)
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' ws: wss: https: https://api.stripe.com https://*.trycloudflare.com https://*.roblox.com https://*.rbxcdn.com https://api.binance.com https://discord.com https://cdn.discordapp.com; frame-src https://js.stripe.com https://www.paypal.com;");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' ws: wss: https: https://api.stripe.com https://*.trycloudflare.com https://*.roblox.com https://*.rbxcdn.com https://api.binance.com https://discord.com https://cdn.discordapp.com; frame-src https://js.stripe.com https://www.paypal.com;");
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     res.removeHeader('X-Powered-By');
 

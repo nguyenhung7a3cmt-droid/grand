@@ -819,6 +819,31 @@ export default function Navbar() {
                 <Headphones className="w-4 h-4 text-gs-muted" />
                 <span>24/7 Discord & Ticket Support</span>
               </button>
+
+              {/* Mobile Sound FX Toggle */}
+              <button
+                onClick={() => {
+                  toggleSound();
+                  triggerAudio('click');
+                }}
+                className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition-all ${
+                  soundEnabled
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : 'bg-red-500/10 border-red-500/30 text-red-400'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {soundEnabled ? (
+                    <Volume2 className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <VolumeX className="w-4 h-4 text-red-400" />
+                  )}
+                  <span className="text-xs font-heading font-semibold">Sound FX (Hi-Fi Audio)</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase">
+                  {soundEnabled ? 'ENABLED' : 'MUTED'}
+                </span>
+              </button>
             </div>
 
             {/* Mobile Account Section */}

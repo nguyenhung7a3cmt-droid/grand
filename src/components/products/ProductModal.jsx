@@ -104,6 +104,7 @@ export default function ProductModal() {
     if (name) {
       setRobloxUsername(name);
     }
+    soundFx.addToCart();
     addToCart(product, quantity);
     setIsAddedSuccess(true);
     setTimeout(() => setIsAddedSuccess(false), 2000);
@@ -114,6 +115,7 @@ export default function ProductModal() {
     if (name) {
       setRobloxUsername(name);
     }
+    soundFx.instantBuy();
     buyNow(product, quantity);
   };
 
