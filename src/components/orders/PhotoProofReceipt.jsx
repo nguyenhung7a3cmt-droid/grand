@@ -150,13 +150,27 @@ GrandStock.net — Roblox In-Game Item Shopping Store
           <div className="py-4 space-y-4">
             <div className="relative rounded-2xl bg-black border-2 border-emerald-500/40 overflow-hidden shadow-2xl">
               {/* Full Screenshot View */}
-              <div className="relative min-h-[260px] sm:min-h-[320px] max-h-80 w-full overflow-hidden bg-[#0a0c14] flex items-center justify-center">
+              <div className="relative min-h-[280px] sm:min-h-[380px] max-h-[500px] w-full overflow-hidden bg-[#07080e] flex items-center justify-center p-2">
                 <img
                   src={currentImgSrc}
                   alt=""
                   onError={() => setCurrentImgSrc(defaultSvgProof)}
-                  className="w-full h-full object-contain max-h-80"
+                  className="w-full h-full object-contain max-h-[480px] rounded-lg"
                 />
+
+                {/* Open Original Full Image Link if real photo */}
+                {currentImgSrc && !currentImgSrc.startsWith('data:') && (
+                  <a
+                    href={currentImgSrc}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute bottom-3 left-3 px-2 py-1 rounded-lg bg-black/80 hover:bg-black border border-white/20 text-white text-[10px] font-mono flex items-center gap-1.5 backdrop-blur-md transition-colors cursor-pointer z-10 shadow"
+                    title="Open original high-res Discord photo"
+                  >
+                    <ExternalLink className="w-3 h-3 text-emerald-400" />
+                    <span>View Full Photo</span>
+                  </a>
+                )}
 
                 {/* Stamp overlay */}
                 <div className="absolute top-4 right-4 sm:top-5 sm:right-6 rotate-3 sm:rotate-6 pointer-events-none select-none z-10">

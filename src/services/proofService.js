@@ -1,7 +1,7 @@
 import { maskRobloxUsername } from '../utils/privacyMask.js';
 
-const STORAGE_KEY_PROOFS = 'tanstock_real_discord_proofs_v14';
-const CHANNEL_NAME = 'tanstock_proofs_bus_v14';
+const STORAGE_KEY_PROOFS = 'tanstock_real_discord_proofs_v15';
+const CHANNEL_NAME = 'tanstock_proofs_bus_v15';
 
 let broadcastChannel = null;
 try {
@@ -30,9 +30,9 @@ export function getStoredProofs() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Discard if containing expired discord attachments
-        const hasExpired = parsed.some(p => p.proofScreenshot && p.proofScreenshot.includes('cdn.discordapp.com/attachments/'));
-        if (!hasExpired) {
+        // Discard if containing expired discord attachments or legacy svg mock proofs
+        const hasStale = parsed.some(p => p.proofScreenshot && (p.proofScreenshot.includes('cdn.discordapp.com/attachments/') || p.proofScreenshot.startsWith('data:image/svg')));
+        if (!hasStale) {
           cachedProofs = parsed;
           return parsed;
         }

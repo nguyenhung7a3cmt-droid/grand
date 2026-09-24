@@ -425,35 +425,56 @@ export default function ProofsModal() {
                     {/* Card Content Body */}
                     {!isDiscord ? (
                       /* Trade Screenshot / Handshake Content */
-                      <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-black/60 border border-emerald-500/20 space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-sm shrink-0">
-                              {getGameIcon(item.game)}
+                      <div className="space-y-2">
+                        {/* Real Screenshot Photo Preview */}
+                        {item.proofScreenshot && (
+                          <div className="relative w-full h-32 sm:h-36 rounded-lg sm:rounded-xl overflow-hidden bg-black/80 border border-emerald-500/25 group-hover:border-emerald-500/60 transition-all">
+                            <img
+                              src={item.proofScreenshot}
+                              alt={item.item}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                            />
+                            <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md border border-emerald-500/30 text-[9px] font-mono font-bold text-emerald-400 flex items-center gap-1 shadow">
+                              <Camera className="w-2.5 h-2.5" />
+                              <span>DISCORD PROOF</span>
                             </div>
-                            <div className="min-w-0">
-                              <div className="font-heading font-black text-white text-xs sm:text-sm truncate">
-                                {item.item}
+                            <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md border border-white/10 text-[9px] font-mono text-white/80">
+                              Click to Zoom
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-black/60 border border-emerald-500/20 space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-sm shrink-0">
+                                {getGameIcon(item.game)}
                               </div>
-                              <div className="text-[10px] font-mono text-emerald-400 font-semibold truncate">
-                                {item.game}
+                              <div className="min-w-0">
+                                <div className="font-heading font-black text-white text-xs sm:text-sm truncate">
+                                  {item.item}
+                                </div>
+                                <div className="text-[10px] font-mono text-emerald-400 font-semibold truncate">
+                                  {item.game}
+                                </div>
                               </div>
+                            </div>
+
+                            <div className="text-right shrink-0">
+                              <span className="font-mono font-black text-emerald-400 text-xs sm:text-sm block">
+                                {item.amount}
+                              </span>
+                              <span className="text-[9px] font-mono text-gs-muted block">
+                                ESCROW
+                              </span>
                             </div>
                           </div>
 
-                          <div className="text-right shrink-0">
-                            <span className="font-mono font-black text-emerald-400 text-xs sm:text-sm block">
-                              {item.amount}
-                            </span>
-                            <span className="text-[9px] font-mono text-gs-muted block">
-                              ESCROW
-                            </span>
+                          <div className="px-2 py-1 rounded bg-[#0d0f17] border border-white/5 flex items-center justify-between text-[10px] font-mono text-gs-muted">
+                            <span className="truncate">Staff: <strong className="text-slate-300 font-medium">{item.staffName}</strong></span>
+                            <span className="text-emerald-400 font-bold shrink-0">✓ Delivered</span>
                           </div>
-                        </div>
-
-                        <div className="px-2 py-1 rounded bg-[#0d0f17] border border-white/5 flex items-center justify-between text-[10px] font-mono text-gs-muted">
-                          <span className="truncate">Staff: <strong className="text-slate-300 font-medium">{item.staffName}</strong></span>
-                          <span className="text-emerald-400 font-bold shrink-0">✓ Delivered</span>
                         </div>
                       </div>
                     ) : (
